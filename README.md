@@ -27,3 +27,7 @@ https://docs.inrupt.com/developer-tools/javascript/client-libraries/authenticati
 https://solidproject.org/for-developers
 
 Thomas doit se créer un WebID chez Inrupt et l'envoyer à PAC
+
+## Code de Pierre-Antoine
+
+https://gitlab.com/pchampin/solid-spoty en particulier le login https://gitlab.com/pchampin/solid-spoty/-/blob/main/src/components/Login.tsx?ref_type=heads
