@@ -25,6 +25,7 @@ import {
   } from "@inrupt/solid-client";
   
   import { SCHEMA_INRUPT, RDF, AS } from "@inrupt/vocab-common-rdf";
+  import { QueryEngine } from '@comunica/query-sparql-solid';
   
   const selectorIdP:any = document.querySelector("#select-idp");
   const selectorPod:any = document.querySelector("#select-pod");
@@ -111,8 +112,24 @@ import {
     const session:Session = getDefaultSession();
     //localStorage.removeItem("userSession");
     console.log(await session) ;
+    const myEngine = new QueryEngine();
   
     // Update the page with the retrieved values.
+    const bindingsStream = await myEngine.queryBindings(`
+        SELECT * WHERE {
+            ?s ?p ?o
+        } LIMIT 1000`, {
+        // Set your profile as query source
+        sources: ['https://solid.champin.net/pa/spoty/'],
+        // Pass your authenticated session
+        '@comunica/actor-http-inrupt-solid-client-authn:session': session,
+      });
+      console.log(bindingsStream)  ;
+
+        
+      bindingsStream.forEach((stream) => {
+        console.log(stream.toString())  ;
+      });
   
     mypods.forEach((mypod) => {
       let podOption = document.createElement("option");

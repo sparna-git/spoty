@@ -27,3 +27,9 @@ https://docs.inrupt.com/developer-tools/javascript/client-libraries/authenticati
 https://solidproject.org/for-developers
 
 Thomas doit se créer un WebID chez Inrupt et l'envoyer à PAC
+
+
+## Documentation Comunica
+
+Link traversal : https://comunica.dev/docs/query/advanced/solid/
+Exemple requète avec config : https://comunica.dev/docs/modify/getting_started/custom_config_app/
