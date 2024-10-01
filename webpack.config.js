@@ -65,7 +65,7 @@ module.exports = {
                     name: 'images/[hash]-[name].[ext]'
                 } 
             }]
-        }
+        },
     ]
   },
   resolve: {

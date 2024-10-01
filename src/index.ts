@@ -25,7 +25,12 @@ import {
   } from "@inrupt/solid-client";
   
   import { SCHEMA_INRUPT, RDF, AS } from "@inrupt/vocab-common-rdf";
-  import { QueryEngine } from '@comunica/query-sparql-solid';
+  //import { QueryEngine } from '@comunica/query-sparql-solid';
+  //import { QueryEngine } from '@comunica/query-sparql-solid';
+  import { QueryEngineFactoryBase } from '@comunica/actor-init-query';
+  import { QueryEngine } from '@comunica/query-sparql';
+  //import { QueryEngineFactory } from '@comunica/query-sparql';
+    const QueryEngineFactory = require('@comunica/query-sparql').QueryEngineFactory;
   
   const selectorIdP:any = document.querySelector("#select-idp");
   const selectorPod:any = document.querySelector("#select-pod");
@@ -39,6 +44,8 @@ import {
   buttonRead.setAttribute("disabled", "disabled");
   buttonLogin.setAttribute("disabled", "disabled");
   buttonCreate.setAttribute("disabled", "disabled");
+
+export const COMUNICA_CONFIG="config.json" ;
 
   function checkSession() {
     //localStorage.setItem("userSession", null);
@@ -112,13 +119,18 @@ import {
     const session:Session = getDefaultSession();
     //localStorage.removeItem("userSession");
     console.log(await session) ;
-    const myEngine = new QueryEngine();
-  
+    /*const myEngine = Comunica.newEngineDynamic().create({
+        configPath: 'config-comunica/config-solid-single-pod.json', // Relative or absolute path 
+    });;*/
+    const myEngine = await new QueryEngineFactory().create({
+        configPath: 'config-comunica/config-solid-single-pod.json', // Relative or absolute path 
+    });
+  console.log(myEngine) ;
     // Update the page with the retrieved values.
     const bindingsStream = await myEngine.queryBindings(`
         SELECT * WHERE {
-            ?s ?p ?o
-        } LIMIT 1000`, {
+      ?s ?p ?o
+  } LIMIT 100`, {
         // Set your profile as query source
         sources: ['https://solid.champin.net/pa/spoty/'],
         // Pass your authenticated session
@@ -127,7 +139,7 @@ import {
       console.log(bindingsStream)  ;
 
         
-      bindingsStream.forEach((stream) => {
+      bindingsStream.forEach((stream:any) => {
         console.log(stream.toString())  ;
       });
   
