@@ -32,6 +32,8 @@ Thomas doit se créer un WebID chez Inrupt et l'envoyer à PAC
 
 https://gitlab.com/pchampin/solid-spoty en particulier le login https://gitlab.com/pchampin/solid-spoty/-/blob/main/src/components/Login.tsx?ref_type=heads
 
+URL du graphDB actuel : http://vps-6ad181ed.vps.ovh.net:7200/
+
 ## Comunica Solid Link Traversal feature
 
 https://comunica.dev/research/link_traversal/
