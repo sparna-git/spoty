@@ -57,11 +57,11 @@ GROUP BY ?type
 ```sparql
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 SELECT DISTINCT ?Token_1 ?Token_1_label WHERE {
-  ?Token_1 rdf:type <https://w3id.org/SpOTy/ontology#Token>.
-  OPTIONAL { ?Token_1 <https://w3id.org/SpOTy/ontology#ttranscription> ?Token_1_label. }
-  ?Token_1 <https://w3id.org/SpOTy/ontology#morphoSyntax> ?MorphoSyntax_4.
-  ?MorphoSyntax_4 rdf:type <http://www.w3.org/2004/02/skos/core#Concept>;
-    <https://w3id.org/SpOTy/ontology#code> "Ps".
+  ?Token_1 rdf:type <https://aslan.universite-lyon.fr/spoty/ns/Token>.
+  OPTIONAL { ?Token_1 <https://aslan.universite-lyon.fr/spoty/ns/ttranscription> ?Token_1_label. }
+  ?Token_1 <https://aslan.universite-lyon.fr/spoty/ns/semantics> ?Semantics_2.
+  ?Semantics_2 rdf:type <http://www.w3.org/2004/02/skos/core#Concept>;
+    <https://aslan.universite-lyon.fr/spoty/ns/code> "O".
 }
 LIMIT 1000
 ```
