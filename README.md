@@ -40,3 +40,14 @@ https://comunica.dev/docs/query/advanced/solid/
 ## Documentation Comunica
 
 Exemple requète avec config : https://comunica.dev/docs/modify/getting_started/custom_config_app/
+
+## Requête SPARQL de test pour comprendre ce que "voit" Comunica
+
+Donne la liste de tous les types avec le nombre d'instances de chaque type:
+
+```sparql
+SELECT ?type (COUNT(?x) AS ?count) WHERE {
+    ?x a ?type 
+}
+GROUP BY ?type
+```
