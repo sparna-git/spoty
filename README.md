@@ -63,6 +63,6 @@ SELECT DISTINCT ?Token_1 ?Token_1_label WHERE {
   ?Semantics_2 rdf:type <http://www.w3.org/2004/02/skos/core#Concept>;
     <https://w3id.org/SpOTy/ontology#code> "O".
 }
-LIMIT 1000
+LIMIT 100
 ```
 ## 
