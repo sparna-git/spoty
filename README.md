@@ -40,3 +40,7 @@ https://comunica.dev/docs/query/advanced/solid/
 ## Documentation Comunica
 
 Exemple requète avec config : https://comunica.dev/docs/modify/getting_started/custom_config_app/
+
+## source onthologies 
+
+https://w3id.org/SpOTy/

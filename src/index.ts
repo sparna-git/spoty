@@ -26,11 +26,11 @@ import {
   
   import { SCHEMA_INRUPT, RDF, AS } from "@inrupt/vocab-common-rdf";
   //import { QueryEngine } from '@comunica/query-sparql-solid';
-  //import { QueryEngine } from '@comunica/query-sparql-solid';
-  import { QueryEngineFactoryBase } from '@comunica/actor-init-query';
-  import { QueryEngine } from '@comunica/query-sparql';
-  //import { QueryEngineFactory } from '@comunica/query-sparql';
-    const QueryEngineFactory = require('@comunica/query-sparql').QueryEngineFactory;
+  import { QueryEngine } from '@comunica/query-sparql-link-traversal-solid';
+  //import { QueryEngine } from '@comunica/query-sparql';
+  //import { QueryEngineFactoryBase } from '@comunica/actor-init-query';
+  //import { QueryEngine, QueryEngineFactory } from '@comunica/query-sparql';
+    //const QueryEngineFactory = require('@comunica/query-sparql').QueryEngineFactory;
   
   const selectorIdP:any = document.querySelector("#select-idp");
   const selectorPod:any = document.querySelector("#select-pod");
@@ -122,26 +122,41 @@ export const COMUNICA_CONFIG="config.json" ;
     /*const myEngine = Comunica.newEngineDynamic().create({
         configPath: 'config-comunica/config-solid-single-pod.json', // Relative or absolute path 
     });;*/
+    /*console.log(QueryEngine) ;
+    console.log(QueryEngineFactory) ;
     const myEngine = await new QueryEngineFactory().create({
         configPath: 'config-comunica/config-solid-single-pod.json', // Relative or absolute path 
     });
-  console.log(myEngine) ;
+  console.log(myEngine) ;*/
     // Update the page with the retrieved values.
+    const myEngine = new QueryEngine();
     const bindingsStream = await myEngine.queryBindings(`
-        SELECT * WHERE {
-      ?s ?p ?o
-  } LIMIT 100`, {
+      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+SELECT DISTINCT ?Token_1 ?Token_1_label WHERE {
+  ?Token_1 rdf:type <https://w3id.org/SpOTy/ontology#Token>.
+  OPTIONAL { ?Token_1 <https://w3id.org/SpOTy/ontology#ttranscription> ?Token_1_label. }
+  ?Token_1 <https://w3id.org/SpOTy/ontology#semantics> ?Semantics_2.
+  ?Semantics_2 rdf:type <http://www.w3.org/2004/02/skos/core#Concept>;
+    <https://w3id.org/SpOTy/ontology#code> "O".
+}
+LIMIT 100
+`, {
         // Set your profile as query source
-        sources: ['https://solid.champin.net/pa/spoty/'],
+        sources: ['https://solid.champin.net/pa/spoty/', 
+            { type: 'file', value: 'https://perso.liris.cnrs.fr/pierre-antoine.champin/2023/SpOTy/ontology' },
+            //{ type: 'file', value: 'https://w3id.org/SpOTy/languages' },
+            ],
+        lenient: true,
         // Pass your authenticated session
         '@comunica/actor-http-inrupt-solid-client-authn:session': session,
       });
-      console.log(bindingsStream)  ;
+      console.log('bindingsStream')  ;
 
         
       bindingsStream.forEach((stream:any) => {
         console.log(stream.toString())  ;
       });
+      console.log('end query bindingsStream')  ;
   
     mypods.forEach((mypod) => {
       let podOption = document.createElement("option");
