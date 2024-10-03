@@ -28,9 +28,6 @@ import {
   //import { QueryEngine } from '@comunica/query-sparql-solid';
   import { QueryEngine } from '@comunica/query-sparql-link-traversal-solid';
   //import { QueryEngine } from '@comunica/query-sparql';
-  //import { QueryEngineFactoryBase } from '@comunica/actor-init-query';
-  //import { QueryEngine, QueryEngineFactory } from '@comunica/query-sparql';
-    //const QueryEngineFactory = require('@comunica/query-sparql').QueryEngineFactory;
   
   const selectorIdP:any = document.querySelector("#select-idp");
   const selectorPod:any = document.querySelector("#select-pod");
@@ -45,39 +42,27 @@ import {
   buttonLogin.setAttribute("disabled", "disabled");
   buttonCreate.setAttribute("disabled", "disabled");
 
-export const COMUNICA_CONFIG="config.json" ;
 
   function checkSession() {
     //localStorage.setItem("userSession", null);
     console.log('checkSession') ;
     console.log(new URL("/", window.location.href).toString()) ;
 
-
-
-    //let old_session =getDefaultSession(); 
-    //console.log(old_session) ;
     const userJson = localStorage.getItem("userSession");
     if(userJson != null) {
         const session = JSON.parse(userJson);
 
-        const sessionb = new Session({} ,session.info.sessionId );
-
-        console.log(session) ;
-        console.log(sessionb) ;
-
         if (session.info.isLoggedIn) {
-            console.log(session.info.webId) ;
-        // Update the page with the status.
-        (<HTMLInputElement>document.getElementById("myWebID")).value = session.info.webId;
+          console.log(session.info.webId) ;
+          // Update the page with the status.
+          (<HTMLInputElement>document.getElementById("myWebID")).value = session.info.webId;
     
-        // Enable Read button to read Pod URL
-        buttonRead.removeAttribute("disabled");
+          // Enable Read button to read Pod URL
+          buttonRead.removeAttribute("disabled");
         }
     }
-
-
   }
-  //checkSession() ;
+
   // 1a. Start Login Process. Call login() function.
   function loginToSelectedIdP() {
     const SELECTED_IDP = (document.getElementById("select-idp") as HTMLInputElement).value;
@@ -85,7 +70,7 @@ export const COMUNICA_CONFIG="config.json" ;
     return login({
       oidcIssuer: SELECTED_IDP,
       redirectUrl: new URL("/", window.location.href).toString()+`dev-page/`,
-      clientName: "Getting started app"
+      clientName: "SpOTy"
     });
   }
 
@@ -104,7 +89,10 @@ export const COMUNICA_CONFIG="config.json" ;
         localStorage.setItem("userSession", JSON.stringify(session));
     }
     
-    checkSession()
+    // test the query execution right after login
+    testSparqlQuery(session);
+
+    checkSession();
   }
   
   // The example has the login redirect back to the root page.
@@ -116,22 +104,26 @@ export const COMUNICA_CONFIG="config.json" ;
     const webID = (<HTMLInputElement>document.getElementById("myWebID")).value;
     const mypods = await getPodUrlAll(webID, { fetch: fetch });
 
-    const session:Session = getDefaultSession();
-    //localStorage.removeItem("userSession");
-    console.log(await session) ;
-    /*const myEngine = Comunica.newEngineDynamic().create({
-        configPath: 'config-comunica/config-solid-single-pod.json', // Relative or absolute path 
-    });;*/
-    /*console.log(QueryEngine) ;
-    console.log(QueryEngineFactory) ;
-    const myEngine = await new QueryEngineFactory().create({
-        configPath: 'config-comunica/config-solid-single-pod.json', // Relative or absolute path 
+    mypods.forEach((mypod) => {
+      let podOption = document.createElement("option");
+      podOption.textContent = mypod;
+      podOption.value = mypod;
+      selectorPod.appendChild(podOption);
     });
-  console.log(myEngine) ;*/
-    // Update the page with the retrieved values.
+
+    const session:Session = getDefaultSession();  
+    // testSparqlQuery(session);
+  }
+
+  async function testSparqlQuery(theSession:Session) {
+    console.log("Testing SPARQL query with following session :")
+    console.log(theSession)
     const myEngine = new QueryEngine();
-    const bindingsStream = await myEngine.queryBindings(`
-      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+    // Query to test a join between POD & ontology
+/*
+    let SPARQL_QUERY = `
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 SELECT DISTINCT ?Token_1 ?Token_1_label WHERE {
   ?Token_1 rdf:type <https://w3id.org/SpOTy/ontology#Token>.
   OPTIONAL { ?Token_1 <https://w3id.org/SpOTy/ontology#ttranscription> ?Token_1_label. }
@@ -140,30 +132,58 @@ SELECT DISTINCT ?Token_1 ?Token_1_label WHERE {
     <https://w3id.org/SpOTy/ontology#code> "O".
 }
 LIMIT 100
-`, {
-        // Set your profile as query source
-        sources: ['https://solid.champin.net/pa/spoty/', 
-            { type: 'file', value: 'https://perso.liris.cnrs.fr/pierre-antoine.champin/2023/SpOTy/ontology' },
+`
+*/
+
+    // Query that works on POD content only
+/*
+    let SPARQL_QUERY = `
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+SELECT DISTINCT ?Token_1 ?Token_1_label WHERE {
+  ?Token_1 rdf:type <https://w3id.org/SpOTy/ontology#Token>.
+  OPTIONAL { ?Token_1 <https://w3id.org/SpOTy/ontology#ttranscription> ?Token_1_label. }
+}
+LIMIT 100
+`
+*/
+
+    // Query that works on ontology content only
+    let SPARQL_QUERY = `
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+SELECT DISTINCT ?x WHERE {
+  ?x rdf:type <http://www.w3.org/2004/02/skos/core#Concept>;
+    <https://w3id.org/SpOTy/ontology#code> "O".
+}
+LIMIT 100
+`
+
+    console.log("calling Comunica engine...")
+    const bindingsStream = await myEngine.queryBindings(SPARQL_QUERY, 
+      {
+        sources: [
+            'https://solid.champin.net/pa/spoty/', 
+            // POD de Thomas
+            // 'https://storage.inrupt.com/fa747398-3bdd-4c3b-be0e-a646ac9f71f2/',
+            'https://w3id.org/SpOTy/ontology',
             //{ type: 'file', value: 'https://w3id.org/SpOTy/languages' },
-            ],
+        ],
         lenient: true,
         // Pass your authenticated session
-        '@comunica/actor-http-inrupt-solid-client-authn:session': session,
-      });
-      console.log('bindingsStream')  ;
-
+        '@comunica/actor-http-inrupt-solid-client-authn:session': theSession
+      }
+    );
         
-      bindingsStream.forEach((stream:any) => {
-        console.log(stream.toString())  ;
-      });
-      console.log('end query bindingsStream')  ;
-  
-    mypods.forEach((mypod) => {
-      let podOption = document.createElement("option");
-      podOption.textContent = mypod;
-      podOption.value = mypod;
-      selectorPod.appendChild(podOption);
+    bindingsStream.on('data', (binding) => {
+      // Quick way to print bindings for testing
+      console.log(binding.toString());         
+      // Obtaining values
+      // console.log(binding.get('s').value);
     });
+
+    bindingsStream.on('end', () => {
+        console.log("Comunica query execution has ended !")
+    });
+
   }
   
   // 3. Create the Reading List
