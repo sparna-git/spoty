@@ -72,4 +72,23 @@ SELECT DISTINCT ?Token_1 ?Token_1_label WHERE {
 LIMIT 100
 ```
 
+## test demo
+Demo pge : https://comunica.github.io/comunica-feature-link-traversal-web-clients/builds/solid-single-pod/
+
+Data sources : 
+- https://solid.champin.net/pa/spoty/
+- https://w3id.org/SpOTy/ontology
+
+
+```sparql
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+SELECT DISTINCT ?Token_1 ?Token_1_label WHERE {
+  ?Token_1 rdf:type <https://w3id.org/SpOTy/ontology#Token>.
+  OPTIONAL { ?Token_1 <https://w3id.org/SpOTy/ontology#ttranscription> ?Token_1_label. }
+  ?Token_1 <https://w3id.org/SpOTy/ontology#semantics> ?Semantics_2.
+  ?Semantics_2 rdf:type <http://www.w3.org/2004/02/skos/core#Concept>;
+    <https://w3id.org/SpOTy/ontology#code> "O".
+}
+LIMIT 100
+```
 Lien vers lapage de Comunica qui marche : https://comunica.github.io/comunica-feature-link-traversal-web-clients/builds/solid-single-pod/#datasources=https%3A%2F%2Fsolid.champin.net%2Fpa%2Fspoty%2F;https%3A%2F%2Fw3id.org%2FSpOTy%2Fontology&query=PREFIX%20rdf%3A%20%3Chttp%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23%3E%0ASELECT%20DISTINCT%20%3FToken_1%20%3FToken_1_label%20WHERE%20%7B%0A%20%20%3FToken_1%20rdf%3Atype%20%3Chttps%3A%2F%2Fw3id.org%2FSpOTy%2Fontology%23Token%3E.%0A%20%20OPTIONAL%20%7B%20%3FToken_1%20%3Chttps%3A%2F%2Fw3id.org%2FSpOTy%2Fontology%23ttranscription%3E%20%3FToken_1_label.%20%7D%0A%20%20%3FToken_1%20%3Chttps%3A%2F%2Fw3id.org%2FSpOTy%2Fontology%23semantics%3E%20%3FSemantics_2.%0A%20%20%3FSemantics_2%20rdf%3Atype%20%3Chttp%3A%2F%2Fwww.w3.org%2F2004%2F02%2Fskos%2Fcore%23Concept%3E%3B%0A%20%20%20%20%3Chttps%3A%2F%2Fw3id.org%2FSpOTy%2Fontology%23code%3E%20%22O%22.%0A%7D%0ALIMIT%20100
