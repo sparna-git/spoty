@@ -92,3 +92,12 @@ SELECT DISTINCT ?Token_1 ?Token_1_label WHERE {
 LIMIT 100
 ```
 Lien vers lapage de Comunica qui marche : https://comunica.github.io/comunica-feature-link-traversal-web-clients/builds/solid-single-pod/#datasources=https%3A%2F%2Fsolid.champin.net%2Fpa%2Fspoty%2F;https%3A%2F%2Fw3id.org%2FSpOTy%2Fontology&query=PREFIX%20rdf%3A%20%3Chttp%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23%3E%0ASELECT%20DISTINCT%20%3FToken_1%20%3FToken_1_label%20WHERE%20%7B%0A%20%20%3FToken_1%20rdf%3Atype%20%3Chttps%3A%2F%2Fw3id.org%2FSpOTy%2Fontology%23Token%3E.%0A%20%20OPTIONAL%20%7B%20%3FToken_1%20%3Chttps%3A%2F%2Fw3id.org%2FSpOTy%2Fontology%23ttranscription%3E%20%3FToken_1_label.%20%7D%0A%20%20%3FToken_1%20%3Chttps%3A%2F%2Fw3id.org%2FSpOTy%2Fontology%23semantics%3E%20%3FSemantics_2.%0A%20%20%3FSemantics_2%20rdf%3Atype%20%3Chttp%3A%2F%2Fwww.w3.org%2F2004%2F02%2Fskos%2Fcore%23Concept%3E%3B%0A%20%20%20%20%3Chttps%3A%2F%2Fw3id.org%2FSpOTy%2Fontology%23code%3E%20%22O%22.%0A%7D%0ALIMIT%20100
+
+
+## DEv - Compilation du script
+
+Configuartion peronnalisable de queryEngine dans `custom_pacckage/config/config-default.json`
+
+Excuter en premier dans `custom_package/` : `npm run build`
+
+Et à la racine du projet `/` : `npm run start` || `npm run build`
