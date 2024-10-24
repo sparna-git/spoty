@@ -2,7 +2,9 @@
 import "./assets/stylesheets/index.scss"
 
 //import { QueryEngine } from '@comunica/query-sparql-solid';
+//import { QueryEngine } from '@comunica/query-sparql-link-traversal-solid';
 import { QueryEngine } from '@comunica/query-sparql-link-traversal-solid';
+//import { QueryEngine } from '../custom_pacckage';
 //import { QueryEngine } from '@comunica/query-sparql';
 import {
     login,
@@ -124,8 +126,8 @@ GROUP BY ?type
         'https://solid.champin.net/pa/spoty/', 
         // POD de Thomas
         // 'https://storage.inrupt.com/fa747398-3bdd-4c3b-be0e-a646ac9f71f2/',
-        //'https://w3id.org/SpOTy/ontology',
-        'https://perso.liris.cnrs.fr/pierre-antoine.champin/2023/SpOTy/ontology',
+        'https://w3id.org/SpOTy/ontology',
+        //'https://perso.liris.cnrs.fr/pierre-antoine.champin/2023/SpOTy/ontology',
         { type: 'file', value: 'https://w3id.org/SpOTy/languages' },
     ],
     lenient: true,

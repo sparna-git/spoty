@@ -109,9 +109,9 @@ module.exports = {
 	new DashboardPlugin(),
 	// so that stream works properly, necessary for RDFSpec provider
 	// see https://stackoverflow.com/questions/68542553/webpack-5process-is-not-defined-triggered-by-stream-browserify
-	new webpack.ProvidePlugin({
+	/*new webpack.ProvidePlugin({
 	  process: 'process/browser'
-	})
+	})*/
   ],
   devServer: {
 		static:{
