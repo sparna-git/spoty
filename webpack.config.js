@@ -8,12 +8,16 @@ const CopyPlugin = require('copy-webpack-plugin');
 const FileManagerPlugin = require('filemanager-webpack-plugin');
 
 module.exports = {
-  entry: ["./src/index.ts" ],
-  output: {
+  entry: {
+	spoty: { import: "./src/index.ts", filename: 'spoty.js' },
+	worker: { import: './src/assets/js/ldf-client-worker_v2.js', filename: 'assets/js/ldf-client-worker_v2.js' },
+	worker_dev: { import: './src/assets/js/ldf-client-worker_v2.js', filename: '../dev-page/assets/js/ldf-client-worker_v2.js' }
+  },
+  /*output: {
     path: path.resolve(__dirname, "./dist"),
     filename: "spoty.js",
     clean: true
-  },
+  },*/
   module: {
     rules: [
     	{
@@ -39,7 +43,13 @@ module.exports = {
 				}
 			}, 
 			{
-			    loader: "sass-loader" // compiles Sass to CSS
+			    loader: "sass-loader", // compiles Sass to CSS
+				options: {
+				  api: "modern",
+				  sassOptions: {
+					// Your sass options
+				  },
+				},
 			}
 			]
 		},

@@ -8,9 +8,10 @@
       "allowJs": true,
       "moduleResolution": "node",
       "allowSyntheticDefaultImports":true,
-      "declaration": true
+      "declaration": true,
+      "checkJs": false,
     },
     "include": [
-      "src/**/*.ts",
+      "src/**/*.ts", "src/Comunica.js", "src/assets/js/ldf-client-worker_v2.js",
     ]
   }
