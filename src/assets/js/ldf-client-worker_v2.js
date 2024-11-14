@@ -5,6 +5,10 @@ var bindingsStreamToGraphQl = require('@comunica/actor-query-result-serialize-tr
 var ProxyHandlerStatic = require('@comunica/actor-http-proxy').ProxyHandlerStatic;
 var WorkerToWindowHandler = require('@rubensworks/solid-client-authn-browser').WorkerToWindowHandler;
 var QueryEngineBase = require('@comunica/actor-init-query').QueryEngineBase;
+var QueryEngine = require('../../../query-sparql-link-traversal-solid').QueryEngine;
+//var QueryEngine = require('../../../engine/lib/index-browser.js').QueryEngine;
+
+
 
 // The active fragments client and the current results
 var resultsIterator;
@@ -12,20 +16,25 @@ var resultsIterator;
 // Set up logging
 var logger = new LoggerPretty({ level: 'info' });
 logger.log = function (level, color, message, data) {
-  postMessage({ type: 'log', log: message + '\n', data: data, test: 'test' });
+  postMessage({ type: 'log', log: message + '\n' });
 };
 
 // Handler for authenticating fetch requests within main window
 const workerToWindowHandler = new WorkerToWindowHandler(self);
 
 function initEngine(config) {
+  console.log('custom engine Worker v2') ;
   // Create an engine lazily
-  if (!engine)
-    engine = new QueryEngineBase(require('../../config/config-default.json'));
+  if (!engine) {
+
+    //engine = new QueryEngineBase(require('../../config/config-default.json'));
+    engine = new QueryEngineBase(require('../../../query-sparql-link-traversal-solid'));
+  }
+    
 
   // Set up a proxy handler
-  if (config.context.httpProxy)
-    config.context.httpProxyHandler = new ProxyHandlerStatic(config.context.httpProxy);
+  /*if (config.context.httpProxy)
+    config.context.httpProxyHandler = new ProxyHandlerStatic(config.context.httpProxy);*/
 
   // Set up authenticated fetch
   if (config.context.workerSolidAuth)
@@ -44,6 +53,7 @@ var handlers = {
 
     // Create a client to fetch the fragments through HTTP
     config.context.log = logger;
+    console.log(config);
     engine.query(config.query, config.context)
       .then(async function (result) {
         // Post query metadata
@@ -62,13 +72,15 @@ var handlers = {
           result.execute().then(function (exists) {
             postMessage({ type: 'result', result: exists });
             postMessage({ type: 'end' });
-          }).catch(postError);
+          //}).catch(postError);
+        }).catch(console.log(result));
           break;
         case 'void':
           result.execute().then(function () {
             postMessage({ type: 'result', result: 'Done' });
             postMessage({ type: 'end' });
-          }).catch(postError);
+          //}).catch(postError);
+          }).catch(console.log(result));
           break;
         }
 
@@ -81,7 +93,8 @@ var handlers = {
                 });
                 postMessage({ type: 'end' });
               })
-              .catch(postError);
+              .catch(console.log(results));
+              //.catch(postError);
           }
           else {
             resultsIterator.on('data', function (result) {
@@ -94,10 +107,12 @@ var handlers = {
             resultsIterator.on('end', function () {
               postMessage({ type: 'end' });
             });
-            resultsIterator.on('error', postError);
+            //resultsIterator.on('error', postError);
+            resultsIterator.on('error', console.log(resultsIterator));
           }
         }
-      }).catch(postError);
+      //}).catch(postError);
+      }).catch(console.log);
   },
 
   // Stop the execution of the current query
@@ -135,8 +150,10 @@ SELECT ?name WHERE {
             // Clear HTTP cache to make sure we re-fetch all next URL
             // TODO: this can be removed once this issue is fixed: https://github.com/comunica/comunica/issues/950
             engine.invalidateHttpCache();
-          }).catch(postError);
-      }).catch(postError);
+          //}).catch(postError);
+          }).catch(console.log);
+      //}).catch(postError);
+      }).catch(console.log);
   },
 };
 

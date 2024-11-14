@@ -79,6 +79,10 @@
   },
   "dependencies": {
     "@chenfengyuan/datepicker": "^1.0.10",
+    "@comunica/actor-extract-links-content-policies": "^0.6.0",
+    "@comunica/actor-rdf-resolve-hypermedia-links-queue-wrapper-limit-count": "^0.6.0",
+    "@comunica/actor-rdf-resolve-hypermedia-links-traverse": "^0.6.0",
+    "@comunica/actor-rdf-resolve-hypermedia-links-traverse-replace-conditional": "^0.6.0",
     "@comunica/config-query-sparql-link-traversal": "^0.6.1",
     "@comunica/logger-pretty": "^4.0.2",
     "@comunica/query-sparql": "^4.0.2",

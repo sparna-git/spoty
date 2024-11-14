@@ -1,11 +1,11 @@
 
 import "./assets/stylesheets/index.scss";
 
-import {LoggerPretty} from "@comunica/logger-pretty";
+//import {LoggerPretty} from "@comunica/logger-pretty";
 
 //import { QueryEngine } from '@comunica/query-sparql-solid';
 //import { QueryEngine } from '@comunica/query-sparql-link-traversal-solid';
-import { QueryEngine } from '@comunica/query-sparql-link-traversal-solid';
+//import { QueryEngine } from '@comunica/query-sparql-link-traversal-solid';
 //import { QueryEngine } from '../custom_package_v2';
 //import { QueryEngine } from '../engine-default';
 //import { QueryEngine } from '@comunica/query-sparql';
@@ -164,7 +164,7 @@ GROUP BY ?type
 
 
 
-    let myEngine = new QueryEngine();
+    /*let myEngine = new QueryEngine();
     console.log(textareaQuery.value) ;
     console.log(window.Comunica)
     //let bindingsStream = await new Comunica.QueryEngine().queryBindings(textareaQuery.value, {
@@ -179,7 +179,7 @@ GROUP BY ?type
         'https://w3id.org/SpOTy/languages',
         //'https://perso.liris.cnrs.fr/pierre-antoine.champin/2023/SpOTy/ontology',
         { type: 'file', value: 'https://w3id.org/SpOTy/ontology' },
-        /*{ type: 'file', value: 'https://w3id.org/SpOTy/languages' },*/
+        //{ type: 'file', value: 'https://w3id.org/SpOTy/languages' },
     ],
     //lenient: true,
     // Pass the authenticated fetch function
@@ -202,7 +202,7 @@ GROUP BY ?type
     });
     bindingsStream.on('error', (error:any) => {
       console.error(error);
-    });
+    });*/
   }
   const LdfQueryUI = function ($element:any, options:any, session:any) {
 
@@ -248,8 +248,8 @@ GROUP BY ?type
           $resultsText = document.createElement("div"),
           $datasources = [
           'https://solid.champin.net/pa/spoty/', 
-          'https://w3id.org/SpOTy/languages',
-            'https://w3id.org/SpOTy/ontology',
+            'https://w3id.org/SpOTy/languages',
+            'https://w3id.org/SpOTy/ontology'
           ],
           
           $bypassCache = this.$bypassCache = false,
@@ -259,15 +259,12 @@ GROUP BY ?type
           this.session = getDefaultSession() ;
 
           this.sparqlQuery = `
-          PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 SELECT DISTINCT ?Token_1 ?Token_1_label WHERE {
   ?Token_1 rdf:type <https://w3id.org/SpOTy/ontology#Token>.
   OPTIONAL { ?Token_1 <https://w3id.org/SpOTy/ontology#ttranscription> ?Token_1_label. }
-  ?Token_1 <https://w3id.org/SpOTy/ontology#semantics> ?Semantics_2.
-  ?Semantics_2 rdf:type <http://www.w3.org/2004/02/skos/core#Concept>;
-    <https://w3id.org/SpOTy/ontology#code> "O".
 }
-LIMIT 1
+LIMIT 100
           `; 
 
           console.log(this.session) ;
@@ -366,6 +363,7 @@ LIMIT 1
           datasource = resolve(datasource, window.location.href);
           return { type: type, value: datasource };
         }),
+        //lenient: true
       };
       /*var prefixesString = '';
       if (this.options.queryFormat === 'sparql') {
@@ -433,6 +431,7 @@ LIMIT 1
     
     _createQueryWorker: function () {
       var self = this;
+      //this._queryWorker = new Worker('assets/js/ldf-client-worker_v2.js');
       this._queryWorker = new Worker('assets/js/ldf-client-worker.min.js?v=1');
       this._queryWorkerSessionHandler = undefined;
       this._queryWorker.onmessage = function (message:any) {
@@ -441,14 +440,18 @@ LIMIT 1
 
         var data = message.data;
         switch (data.type) {
-        case 'queryInfo': return self._initResults(data.queryType);
-        case 'result':    return self._addResult(data.result);
+        //case 'queryInfo': return self._initResults(data.queryType);
+        case 'queryInfo': return console.log(data);
+        //case 'result':    return self._addResult(data.result);
+        case 'result':    return console.log(data);
         case 'end':       return self._endResults();
         //case 'log':       return self._logAppender(data.log);
         //case 'log':       return console.log(data);
-        case 'error':     return this.onerror(data.error);
-        case 'webIdName': return self._setWebIdName(data.name);
-        default:          return console.log(data);
+        //case 'error':     return this.onerror(data.error);
+        case 'error':     return console.log(data);
+        //case 'webIdName': return self._setWebIdName(data.name);
+        case 'webIdName': return console.log(data);
+        //default:          return console.log(data);
         }
       };
       this._queryWorker.onerror = function (error:any) {
