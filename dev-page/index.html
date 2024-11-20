@@ -107,7 +107,7 @@
       <!-- <select id="select-idp" name="select-idp">
         <option value="">--Please select an Identity Provider (IdP)--</option>
         Update the select-idp option if not using PodSpaces
-        <option value="https://login.inrupt.com">https://login.inrupt.com (PodSpaces)</option>
+        <option vsolid-connectalue="https://login.inrupt.com">https://login.inrupt.com (PodSpaces)</option>
 
       </select> -->
       <button type="button" class="btn btn-primary" name="btnLogin" id="btnLogin">Login</button> =>
@@ -126,6 +126,11 @@
     <!-- ======= Sparnatural Section ======= -->
     <section id="sparnatural-section">
       <div class="container">
+        <div class="row solid-connect-wrapper">
+          <solid-connect 
+          suggest-idp-src="https://login.inrupt.com,https://login.inrupt.fr" 
+          ></solid-connect>
+        </div>
 
         <div class="row" style="font-style: italic; font-size:0.9em;">
           <a href="#" id="tutorial"><i id="tutorial-toggle-icon" class="fad fa-question fa-fw"></i>&nbsp; <span data-i18n="tutorial"></a>

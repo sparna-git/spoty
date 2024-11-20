@@ -1,5 +1,8 @@
 
 import "./assets/stylesheets/index.scss";
+import "@yaireo/tagify/dist/tagify.css";
+
+var Tagify = require('@yaireo/tagify');
 
 //import {LoggerPretty} from "@comunica/logger-pretty";
 
@@ -134,7 +137,7 @@ GROUP BY ?type
       initClassLdfQueryUI(textareaQuery, session)
     }
   }
-  handleRedirectAfterLogin();
+  //handleRedirectAfterLogin();
 
   
   buttonLogin.onclick = function () {
@@ -625,3 +628,206 @@ console.log(bindings[0].get('s').value);
 console.log(bindings[0].get('s').termType);
 
 */
+
+class SolidConnect extends HTMLElement {
+  static observedAttributes = ["color", "size"];
+
+  _srcIDP: string;
+  _connected: boolean;
+  _userWebIdName: string;
+  _welcomMessage: string;
+  _enabledConnectSubmit: boolean = false;
+  connectButton: HTMLButtonElement;
+  userWebIdElement: HTMLElement;
+  welcomElement: HTMLElement;
+  idpInput: HTMLInputElement;
+  sourcesInput: HTMLInputElement;
+  suggestedIdpSrc: Array<string>;
+
+
+  constructor() {
+    // Always call super first in constructor
+    super();
+    this.initElement()
+  }
+  get connected(): boolean { return this._connected; }
+  set connected(value: boolean) { 
+    this._connected = value; 
+    if( this._connected ) {
+      this.connectButton.innerText = "Disconnect";
+    } else {
+      this.connectButton.innerText = "Connect";
+    }
+  }
+  get userWebIdName(): string { return this._userWebIdName; }
+  set userWebIdName(value: string) {
+    this._userWebIdName = value;
+    this.userWebIdElement.innerText = 'Connected as '+value;
+  }
+  get welcomMessage(): string { return this._welcomMessage; }
+  set welcomMessage(value: string) {
+    this._welcomMessage = value;
+    this.welcomElement.innerText = value;
+  }
+  get srcIDP(): string { return this._srcIDP; }
+  set srcIDP(value: string) {
+    this._srcIDP = value;
+  }
+  get enabledConnectSubmit(): boolean { return this._enabledConnectSubmit; }
+  set enabledConnectSubmit(value: boolean) {
+    this._enabledConnectSubmit = value;
+    if (value === true) {
+      this.connectButton.disabled = false;
+    } else {
+      this.connectButton.disabled = true;
+    }
+  }
+
+
+  initElement() {
+    console.log(this) ;
+    this.suggestedIdpSrc = this.getAttribute('suggest-idp-src').split(',');
+    this.addUiUx() ;
+    
+    this.connected = false;
+    this.initEventListners()
+    this.handleRedirectAfterLogin();
+    this.welcomMessage = 'Please connect to Solid';
+  }
+  addUiUx() {
+    this.welcomElement = document.createElement("span");
+    this.welcomElement.classList.add('welecom-text');
+    this.appendChild(this.welcomElement);
+
+    this.idpInput = document.createElement("input");
+    this.idpInput.setAttribute('type', 'text');
+    this.idpInput.setAttribute('placeholder', 'Enter IDP Url');
+    this.idpInput.setAttribute('list', 'datalistIdp');
+    this.idpInput.classList.add('src-idp');
+    this.appendChild(this.idpInput);
+
+    let datalistIdp = document.createElement("datalist");
+    datalistIdp.setAttribute('id', 'datalistIdp');
+    for (let idp of this.suggestedIdpSrc) {
+      let option = document.createElement("option");
+      option.value = idp;
+      datalistIdp.appendChild(option);
+    }
+    this.appendChild(datalistIdp);
+
+    //Tagify
+    this.sourcesInput = document.createElement("input");
+    this.sourcesInput.setAttribute('type', 'text');
+    this.sourcesInput.setAttribute('name', 'data-sources');
+    this.sourcesInput.classList.add('data-sources');
+    this.appendChild(this.sourcesInput);
+    var tagify = new Tagify(this.sourcesInput, {
+      // A list of possible tags. This setting is optional if you want to allow
+      // any possible tag to be added without suggesting any to the user.
+      whitelist: []
+    });
+    tagify.setPlaceholder('Enter sources Urls');
+
+    this.connectButton = document.createElement("button");
+    this.connectButton.classList.add('connect-idp');
+    this.connectButton.disabled = true;
+    this.appendChild(this.connectButton);
+    this.userWebIdElement = document.createElement("span");
+    this.userWebIdElement.classList.add('user-webId-name');
+    this.appendChild(this.userWebIdElement);
+  }
+
+  initEventListners() {
+    this.connectButton.addEventListener('click', () => {
+      console.log('clicked') ;
+      this.srcIDP = this.idpInput.value;
+      this.loginToSelectedIdP();
+    });
+    
+    this.idpInput.addEventListener("change", (event:any) => {
+      console.log(this.isValidUrl(event.target.value as string)) ;
+      if (this.isValidUrl(event.target.value as string)) {
+        this.enabledConnectSubmit = true ;
+      } else {
+        this.enabledConnectSubmit = false; 
+      }
+    });
+  }
+
+  loginToSelectedIdP() {
+    const SELECTED_IDP = this.srcIDP;
+    sessionStorage.setItem("SELECTED_IDP", SELECTED_IDP);
+  
+    return login({
+      oidcIssuer: SELECTED_IDP,
+      redirectUrl: new URL("/", window.location.href).toString()+`dev-page/`,
+      clientName: "SpOTy test"
+    });
+  }
+
+  async handleRedirectAfterLogin() {
+
+    /*await handleIncomingRedirect({
+      url: new URL("/", window.location.href).toString()+`dev-page/`,
+      restorePreviousSession: true,
+    }).then((info) => {
+      console.log(`Logged in with WebID [${info.webId}]`);
+    }).catch((e) => {
+      console.error("Failed to log in", e);
+    });*/
+
+    await handleIncomingRedirect(); // no-op if not part of login redirect
+  
+    const session = getDefaultSession();
+    if (session.info.isLoggedIn) {
+
+      this.connected = true;
+      console.log(session.info) ;
+      var res = session.info.webId.split("/");
+      this.welcomMessage = '' ;
+      this.userWebIdName = res[(res.length - 1)];
+      this.enabledConnectSubmit = true;
+      this.srcIDP = sessionStorage.getItem("SELECTED_IDP") ;
+      this.idpInput.value = this.srcIDP ;
+      //this.userWebIdName = session.info.webId.replace(this.srcIDP+'/', '') ;
+      // Update the page with the status.
+      //document.getElementById("myWebID").value = session.info.webId;
+  
+      // Enable Read button to read Pod URL
+      //buttonRead.removeAttribute("disabled");
+      
+      //testSparqlQuery(session);
+      initClassLdfQueryUI(textareaQuery, session)
+    }
+  }
+  
+
+  connectedCallback() {
+    console.log("Custom element added to page.");
+  }
+
+  disconnectedCallback() {
+    console.log("Custom element removed from page.");
+  }
+
+  adoptedCallback() {
+    console.log("Custom element moved to new page.");
+  }
+
+  attributeChangedCallback(name:any, oldValu:any, newValue:any) {
+    console.log(`Attribute ${name} has changed.`);
+  }
+
+  isValidUrl(urlString:string) {
+    let url;
+    try { 
+          url =new URL(urlString); 
+    }
+    catch(e){ 
+      return false; 
+    }
+    return url.protocol === "http:" || url.protocol === "https:";
+}
+}
+
+customElements.define("solid-connect", SolidConnect);

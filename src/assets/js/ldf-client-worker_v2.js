@@ -5,7 +5,7 @@ var bindingsStreamToGraphQl = require('@comunica/actor-query-result-serialize-tr
 var ProxyHandlerStatic = require('@comunica/actor-http-proxy').ProxyHandlerStatic;
 var WorkerToWindowHandler = require('@rubensworks/solid-client-authn-browser').WorkerToWindowHandler;
 var QueryEngineBase = require('@comunica/actor-init-query').QueryEngineBase;
-var QueryEngine = require('../../../query-sparql-link-traversal-solid').QueryEngine;
+//var QueryEngine = require('../../../query-sparql-link-traversal-solid').QueryEngine;
 //var QueryEngine = require('../../../engine/lib/index-browser.js').QueryEngine;
 
 
@@ -28,7 +28,7 @@ function initEngine(config) {
   if (!engine) {
 
     //engine = new QueryEngineBase(require('../../config/config-default.json'));
-    engine = new QueryEngineBase(require('../../../query-sparql-link-traversal-solid'));
+    engine = new QueryEngineBase(require('@comunica/query-sparql-link-traversal-solid'));
   }
     
 

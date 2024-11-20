@@ -1,6 +1,7 @@
 @use 'sass:math';
 @use './mixins';
 @use './base';
+@use './themes';
 // we are importing one default theme,
 // so that all the variables have a default value.
 // they can be overriden by importing another theme CSS in the HTML page
@@ -64,4 +65,52 @@ dt {
 
 dd {
   grid-column-start: 2;
+}
+.solid-connect-wrapper {
+   border: 1px solid var(--secondary-color-light);
+}
+solid-connect {
+   display: block;
+   text-align: right;
+   border: 1px solid var(--secondary-color-light);
+   padding: 5px;
+
+   .data-sources {
+      min-width: 300px;
+      border: 1px solid var(--silver-color-main);
+      padding: 3px;
+   }
+   tags {
+      text-align: left;
+      width: 300px;
+      &>span.tagify__input {
+         padding: 0;
+      }
+      .tagify__tag-text {
+         
+      font-size: 12px;
+      }
+   }
+
+   .src-idp {
+      border: 1px solid var(--silver-color-main);
+      padding: 3px;
+   }
+
+   button {
+      position: relative;
+      outline: none;
+      border-radius: 3px;
+      padding: 3px 10px;
+      border: 1px solid var(--primary-color-main);
+      color: var(--primary-color-main);
+      background: #fff;
+      cursor: pointer;
+
+      &[disabled] {
+         color: var(--silver-color-main);
+         border: 1px solid var(--silver-color-main);
+         cursor: default;
+      }
+   }
 }
