@@ -26,8 +26,9 @@ import {
   
   import { SCHEMA_INRUPT, RDF, AS } from "@inrupt/vocab-common-rdf";
   //import { QueryEngine } from '@comunica/query-sparql-solid';
-  import { QueryEngine } from '@comunica/query-sparql-link-traversal-solid';
+  // import { QueryEngine } from '@comunica/query-sparql-link-traversal-solid';
   //import { QueryEngine } from '@comunica/query-sparql';
+  import { QueryEngine } from 'spoty-query-engine';
   
   const selectorIdP:any = document.querySelector("#select-idp");
   const selectorPod:any = document.querySelector("#select-pod");
@@ -124,38 +125,47 @@ import {
 /*
     let SPARQL_QUERY = `
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-SELECT DISTINCT ?Token_1 ?Token_1_label WHERE {
-  ?Token_1 rdf:type <https://w3id.org/SpOTy/ontology#Token>.
-  OPTIONAL { ?Token_1 <https://w3id.org/SpOTy/ontology#ttranscription> ?Token_1_label. }
-  ?Token_1 <https://w3id.org/SpOTy/ontology#semantics> ?Semantics_2.
-  ?Semantics_2 rdf:type <http://www.w3.org/2004/02/skos/core#Concept>;
-    <https://w3id.org/SpOTy/ontology#code> "O".
+SELECT DISTINCT ?token ?semantics WHERE {
+  ?token a <https://w3id.org/SpOTy/ontology#Token>.
+  ?token <https://w3id.org/SpOTy/ontology#semantics> ?semantics.
+  ?semantics rdf:type <http://www.w3.org/2004/02/skos/core#Concept>;
+    <https://w3id.org/SpOTy/ontology#code> "Fh".
 }
 LIMIT 100
 `
 */
 
     // Query that works on POD content only
+
+    let SPARQL_QUERY = `
+SELECT ?token ?semantics WHERE {
+  ?token a <https://w3id.org/SpOTy/ontology#Token>.
+  ?token <https://w3id.org/SpOTy/ontology#semantics> ?semantics.
+}
+LIMIT 100
+`
+
+
+    // Query that works on ontology content only
 /*
     let SPARQL_QUERY = `
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-SELECT DISTINCT ?Token_1 ?Token_1_label WHERE {
-  ?Token_1 rdf:type <https://w3id.org/SpOTy/ontology#Token>.
-  OPTIONAL { ?Token_1 <https://w3id.org/SpOTy/ontology#ttranscription> ?Token_1_label. }
+SELECT DISTINCT ?x WHERE {
+  ?x rdf:type <http://www.w3.org/2004/02/skos/core#Concept>;
+    <https://w3id.org/SpOTy/ontology#code> "Fh".
 }
 LIMIT 100
 `
 */
 
-    // Query that works on ontology content only
+    // Test query
+/*
     let SPARQL_QUERY = `
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-SELECT DISTINCT ?x WHERE {
-  ?x rdf:type <http://www.w3.org/2004/02/skos/core#Concept>;
-    <https://w3id.org/SpOTy/ontology#code> "O".
-}
-LIMIT 100
+SELECT DISTINCT ?type WHERE {
+      ?s a ?type
+} LIMIT 50
 `
+*/
 
     console.log("calling Comunica engine...")
     const bindingsStream = await myEngine.queryBindings(SPARQL_QUERY, 
@@ -165,7 +175,8 @@ LIMIT 100
             // POD de Thomas
             // 'https://storage.inrupt.com/fa747398-3bdd-4c3b-be0e-a646ac9f71f2/',
             'https://w3id.org/SpOTy/ontology',
-            //{ type: 'file', value: 'https://w3id.org/SpOTy/languages' },
+            // 'https://w3id.org/SpOTy/languages',
+            // 'https://fragments.dbpedia.org/2015/en'
         ],
         lenient: true,
         // Pass your authenticated session
