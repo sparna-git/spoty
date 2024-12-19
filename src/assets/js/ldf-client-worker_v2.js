@@ -8,6 +8,7 @@ var QueryEngineBase = require('@comunica/actor-init-query').QueryEngineBase;
 //var QueryEngine = require('../../../query-sparql-link-traversal-solid').QueryEngine;
 //var QueryEngine = require('../../../engine/lib/index-browser.js').QueryEngine;
 
+import { QueryEngine } from 'spoty-query-engine';
 
 
 // The active fragments client and the current results
@@ -19,6 +20,8 @@ logger.log = function (level, color, message, data) {
   postMessage({ type: 'log', log: message + '\n' });
 };
 
+console.log(self);
+
 // Handler for authenticating fetch requests within main window
 const workerToWindowHandler = new WorkerToWindowHandler(self);
 
@@ -26,9 +29,11 @@ function initEngine(config) {
   console.log('custom engine Worker v2') ;
   // Create an engine lazily
   if (!engine) {
-
+    
     //engine = new QueryEngineBase(require('../../config/config-default.json'));
-    engine = new QueryEngineBase(require('@comunica/query-sparql-link-traversal-solid'));
+    //engine = new QueryEngineBase(require('spoty-query-engine'));
+    engine = new QueryEngine();
+    //engine = new QueryEngine();
   }
     
 
@@ -50,7 +55,7 @@ var handlers = {
   // Execute the given query with the given options
   query: function (config) {
     initEngine(config);
-
+    console.log(engine) ;
     // Create a client to fetch the fragments through HTTP
     config.context.log = logger;
     console.log(config);
@@ -102,13 +107,14 @@ var handlers = {
                 result = Object.fromEntries([...result].map(([key, value]) => [RdfString.termToString(key), RdfString.termToString(value)]));
               else
                 result = RdfString.quadToStringQuad(result);
-              postMessage({ type: 'result', result: result });
+              postMessage({ type: 'result', result: result});
             });
             resultsIterator.on('end', function () {
               postMessage({ type: 'end' });
+              console.log('end of query' ) ;
             });
-            //resultsIterator.on('error', postError);
-            resultsIterator.on('error', console.log(resultsIterator));
+            resultsIterator.on('error', postError);
+            //resultsIterator.on('error', console.log(resultsIterator));
           }
         }
       //}).catch(postError);
@@ -135,11 +141,12 @@ SELECT ?name WHERE {
         ...context,
         'sources': [webId],
         // TODO: this can be removed once this issue is fixed: https://github.com/comunica/comunica/issues/950
-        '@comunica/actor-rdf-resolve-hypermedia-links-traverse:traverse': false,
+        //'@comunica/actor-rdf-resolve-hypermedia-links-traverse:traverse': false,
       },
     };
     initEngine(config);
     config.context.log = logger;
+    console.log(engine) ;
     engine.queryBindings(config.query, config.context)
       .then(function (result) {
         result.toArray({ limit: 1 })
@@ -158,6 +165,7 @@ SELECT ?name WHERE {
 };
 
 function postError(error) {
+  console.log(error) ;
   error = { message: error.message || error.toString() };
   postMessage({ type: 'error', error: error });
 }

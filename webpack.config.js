@@ -7,6 +7,7 @@ const DashboardPlugin = require("webpack-dashboard/plugin");
 const CopyPlugin = require('copy-webpack-plugin');
 const FileManagerPlugin = require('filemanager-webpack-plugin');
 
+
 module.exports = {
   entry: {
 	spoty: { import: "./src/index.ts", filename: 'spoty.js' },
@@ -122,6 +123,8 @@ module.exports = {
 	/*new webpack.ProvidePlugin({
 	  process: 'process/browser'
 	})*/
+	
+
   ],
   devServer: {
 		static:{

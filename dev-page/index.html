@@ -19,6 +19,25 @@
   <!-- Template Main CSS File -->
   <link href="assets/css/style.css" rel="stylesheet">
 
+  <!-- Sparnatural-specific -->
+
+    <!-- Vis.js for timeline -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css">
+
+    <!-- Font Awesome -->    
+    <link rel="stylesheet" href="assets/fa6/css/all.min.css" />
+
+    <!-- YASGUI CSS -->
+    <link href="https://unpkg.com/@triply/yasgui/build/yasgui.min.css" rel="stylesheet" type="text/css" />
+
+    <!-- datepicker -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@chenfengyuan/datepicker@1.0.9/dist/datepicker.min.css">
+
+    <!-- Sparnatural CSS -->
+    <link href="sparnatural.css" rel="stylesheet" />
+    <!-- Timeline CSS -->
+    <link rel="stylesheet" href="assets/css/timeline.css" />
+
     <style>
       .yasqe .CodeMirror {
         font-size: 0.8em;
@@ -50,7 +69,7 @@
 
     </style>
 
-  <!-- /Sparnatural-specific -->
+    <!-- /Sparnatural-specific -->
     <!-- Webpack CSS -->
     <%= css %>
 
@@ -82,7 +101,8 @@
     </div>
   </header><!-- End Header -->
 
-  <section id="login" class="panel" style="padding-top: 100px;">
+  
+  <section id="login" class="panel" style="padding-top: 100px;display:block;">
     <div class="">
       <label id="labelIdP" for="select-idp">1. Connect and launch query: </label>
       <!-- <select id="select-idp" name="select-idp">
@@ -102,19 +122,28 @@
       <!-- <button name="btnLogout" id="btnLogout">Logout</button> -->
     </div>
   </section>
-  
 
     <!-- ======= Sparnatural Section ======= -->
     <section id="sparnatural-section">
       <div class="container">
-        <div class="row solid-connect-wrapper">
-          <solid-connect 
-          suggest-idp-src="https://login.inrupt.com,https://login.inrupt.fr" 
-          ></solid-connect>
+
+        <div class="row" style="font-style: italic; font-size:0.9em;">
+          <a href="#" id="intro"><span data-i18n="intro"></a>
         </div>
+
+              &nbsp;
 
         <div class="row" style="font-style: italic; font-size:0.9em;">
           <a href="#" id="tutorial"><i id="tutorial-toggle-icon" class="fad fa-question fa-fw"></i>&nbsp; <span data-i18n="tutorial"></a>
+        </div>
+
+        <!-- This is where Solid Connect for Sparnatural is inserted -->
+        <div class="row solid-connect-wrapper">
+          <solid-connect
+          suggest-idp-src="https://login.inrupt.com,https://login.inrupt.fr" 
+          suggest-sources="https://solid.champin.net/pa/spoty/"
+          additional-sources="https://w3id.org/SpOTy/languages,https://w3id.org/SpOTy/ontology"
+          ></solid-connect>
         </div>
 
         <!-- This is where Sparnatural is inserted -->
@@ -126,7 +155,7 @@
             lang="en"
             defaultLang="en"
             distinct="true"
-            limit="1000"
+            limit="10"
             debug="true"
           ></spar-natural>
 
@@ -157,6 +186,7 @@
                   <option value="example.2" data-i18n="example.2.title"></option>
                   <option value="example.3" data-i18n="example.3.title"></option>
                   <option value="example.4" data-i18n="example.4.title"></option>
+                  <option value="example.5" data-i18n="example.5.title"></option>
                 </select>
               </div>
             </form>
@@ -165,6 +195,19 @@
 
       </div>
     </section><!-- End Sparnatural Section -->
+
+    <section id="sparnatural-section">
+      <div class="container">
+        <!-- This is where Solid Connect for Sparnatural is inserted -->
+        <div class="row solid-query-ui-wrapper">
+          <solid-query-ui
+          display-logs="true"
+          display-query-state="true"
+          display-query-controls="true"
+          ></solid-query-ui>
+        </div>
+      </div>
+    </section>
 
     <!-- ======= YASQE Section ======= -->
     <section id="yasqe-section">
@@ -281,7 +324,7 @@
 
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 
     <!-- datepicker -->
@@ -289,6 +332,16 @@
 
     <!-- YASGUI stuff -->
     <script src="https://unpkg.com/@triply/yasgui/build/yasgui.min.js"></script>
+
+    <!-- vis.js for the timeline -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
+    <!--  defines timeline plugin -->
+    <script src='assets/js/timeline.js'></script>
+    <script src='assets/js/myTable.js'></script>
+
+    <!-- Sparnatural Javascript -->
+    <script type="text/javascript" src="./sparnatural.js"></script>
+    <script type="text/javascript" src="./sparnatural-yasgui-plugins.js"></script>
 
   <!-- /Sparnatural-specific -->
 
@@ -343,7 +396,9 @@
             'example.3.title': 'All sentences whose first token has type F (figure), with the type of the second token',
             'example.2.title': 'All sentences with a token CC=P',
             'example.4.title': 'Clause number for all MS-H Multi-Head and Multi-Clause',
-            'example.1.title': 'All sentences with language'
+            'example.1.title': 'All sentences with language',
+            'example.5.title': 'All languages with their geolocations'
+
           },
           'fr': {
             'page.title': 'Sparnatural SpOTy',
@@ -367,12 +422,14 @@
             'example.3.title': 'Toutes les phrases dont le premier token est de type F (figure), avec le type du deuxième token',
             'example.2.title': 'Toutes les phrases avec un token CC=P',
             'example.4.title': 'Numero de clause pour tous les MS-H, multi-tête et multi-clause',
-            'example.1.title': 'Toutes les phrases avec leur langue'
+            'example.1.title': 'Toutes les phrases avec leur langue',
+            'example.5.title': 'Toutes les langues avec leur géolocalisation'
           }
       } );  
       $('body').i18n();
 
       const sparnatural = document.querySelector("spar-natural");
+
 
       if(lang == "fr") { 
         sparnatural.setAttribute("lang", "fr");
@@ -406,7 +463,7 @@
       Yasr.registerPlugin("TableX",SparnaturalYasguiPlugins.TableX);
       Yasr.registerPlugin("Grid",SparnaturalYasguiPlugins.GridPlugin);
       Yasr.registerPlugin("Stats",SparnaturalYasguiPlugins.StatsPlugin);
-      Yasr.registerPlugin("Timeline",Timeline);
+      Yasr.registerPlugin("Map",SparnaturalYasguiPlugins.MapPlugin);
       Yasr.plugins.TableX.defaults.uriHrefAdapter = function(uri) {
         if(uri.startsWith("http://fr.dbpedia.org/resource/")) {
           return "http://fr.wikipedia.org/wiki/" + uri.substring("http://fr.dbpedia.org/resource/".length);
@@ -417,7 +474,7 @@
       delete Yasr.plugins['table'];
       delete Yasr.plugins['response'];
       const yasr = new Yasr(document.getElementById("yasr"), {
-        pluginOrder: ["TableX", "Grid", "Stats", "Timeline"],
+        pluginOrder: ["TableX", "Grid", "Map", "Stats"],
         defaultPlugin: "TableX",
         // disable persistency
         persistencyExpire: 0,
@@ -488,16 +545,69 @@
         }
       }
 
+      
+      window.podConnectComponent = document.querySelector("solid-connect");
+
       document.getElementById('tutorial').onclick = function() {
         sparnatural.clear();
         initTour();
       }
 
-    
+
+      window.callbackQueryPod = async function (sparql, session) {
+        console.log('callback launched') ;
+        let results = await window.podQueryEngine(sparql, session) ;
+        return results ;
+      }
+      windowerrorCollbackQueryPod = function(error) {
+        console.log(error) ;
+      }
+
+
+
+      sparnatural.addEventListener("init", (event) => {
+        sparnatural.customization = {
+          sparqlHandler: { 
+            async executeSparql(
+              sparql,
+              callback,
+              errorCallback
+            ) {
+                console.log("Received SPARQL "+sparql);
+
+                if (window.podConnectComponent.logedSession) {
+                  console.log('Connected to pod') ;
+                  let results = await window.callbackQueryPod(sparql, window.podConnectComponent.logedSession);
+                  /*let solidQueryUi = document.querySelector("solid-query-ui");
+                  console.log('query launched on index.html') ;
+                  let results = await solidQueryUi.playLdfQueryUI(sparql) ;
+                  
+                  console.log('results...');
+                  console.log(solidQueryUi.allResultsRecived) ;*/
+                  console.log(results) ;
+                  callback(results);
+                //callback(results) ;
+
+                } else {
+                  window.windowerrorCollbackQueryPod('Not connected to pod') ;
+                  return {};
+                }
+                
+                // ... execute SPARQL ...
+                // fire callback with SPARQL results
+                
+            }
+          }
+        }
+      });
+
+
+    </script>
   </script>
+
+
     <!-- Webpack JS -->
     <script src="../spoty.js"></script>
-
 </body>
 
 </html>

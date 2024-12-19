@@ -51,8 +51,8 @@ LIMIT 10`;
 	  sources: [
       'https://solid.champin.net/pa/spoty/', 
        /*'https://w3id.org/SpOTy/languages',
-        'https://w3id.org/SpOTy/ontology',
-        'https://solid.champin.net/pa/public/spoty/ontology',
+        'https://w3id.org/SpOTy/ontology',*/
+        /*'https://solid.champin.net/pa/public/spoty/ontology',
         'https://solid.champin.net/pa/public/spoty/languages'*/
         //{ type: 'file', value: 'https://w3id.org/SpOTy/ontology' },
         //{ type: 'file', value: 'https://w3id.org/SpOTy/languages' },
@@ -66,24 +66,15 @@ LIMIT 10`;
   
   var onQueryProcess = true;
   var results:any = [] ;
-  var results_keys:any = [] ;
 
 	bindingsStream.on('data', (binding:any) => {
-	    console.log(JSON.parse(binding.toString())) ; // Quick way to print bindings for testing
+	    console.log(binding.toString()); // Quick way to print bindings for testing
+      results.push(binding.toString()) ;
 
-      results_keys = [] ;
-      let result = JSON.parse(binding.toString());
-      Object.keys(result).forEach(key => {
-        results_keys.push(key) ;
-        //console.log(key);        // the name of the current key.
-        result[key] = {value: result[key] }; // the value of the current key.
-      });
-      
-      console.log(result) ;
-
-      results.push(result) ;
-
-
+      for (const [ key, value ] of binding) {
+        console.log(key);
+        console.log(value);
+      }
       
 
       
@@ -109,22 +100,13 @@ LIMIT 10`;
   
 
   for(var start = 1; onQueryProcess; start++) {
-    console.log('waiting results...');
+    console.log('index waiting results...');
     if (onQueryProcess ) {
     await timer(3000);
 
     }
 
     
-  }
-
-  results = {
-    "head" : {
-      "vars" : results_keys 
-    },
-    "results" : {
-      "bindings" : results
-    }
   }
 
   return results ;

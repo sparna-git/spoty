@@ -69,7 +69,7 @@ var sampleQueries = {
                                 "label": "P trajectoire",
                                 "rdfTerm": {
                                     "type": "uri",
-                                    "value": "https://aslan.universite-lyon.fr/spoty/ns/CC-P"
+                                    "value": "https://w3id.org/SpOTy/ontology#CC-P"
                                 }
                             }
                         ]
@@ -177,7 +177,7 @@ var sampleQueries = {
                                 "label": "F figure",
                                 "rdfTerm": {
                                     "type": "uri",
-                                    "value": "https://aslan.universite-lyon.fr/spoty/ns/CC-F"
+                                    "value": "https://w3id.org/SpOTy/ontology#CC-F"
                                 }
                             }
                         ]
@@ -277,7 +277,7 @@ var sampleQueries = {
                         "label": "H tête",
                         "rdfTerm": {
                             "type": "uri",
-                            "value": "https://aslan.universite-lyon.fr/spoty/ns/MS-H"
+                            "value": "https://w3id.org/SpOTy/ontology#MS-H"
                         }
                     }
                 ]
@@ -305,6 +305,63 @@ var sampleQueries = {
                 "values": []
             },
             "children": []
+        }
+    ]
+}
+
+    ,
+    "example.5" :
+{
+    "distinct": true,
+    "variables": [
+        {
+            "termType": "Variable",
+            "value": "Language_1"
+        },
+        {
+            "termType": "Variable",
+            "value": "Latitude_4"
+        },
+        {
+            "termType": "Variable",
+            "value": "Longitude_6"
+        }
+    ],
+    "order": null,
+    "branches": [
+        {
+            "line": {
+                "s": "Language_1",
+                "p": "https://w3id.org/SpOTy/shapes-ldo/Language_center",
+                "o": "Center_2",
+                "sType": "https://w3id.org/SpOTy/shapes-ldo/Language",
+                "oType": "https://w3id.org/SpOTy/shapes-ldo/Center",
+                "values": []
+            },
+            "children": [
+                {
+                    "line": {
+                        "s": "Center_2",
+                        "p": "https://w3id.org/SpOTy/shapes-ldo/Center_latitude",
+                        "o": "Latitude_4",
+                        "sType": "https://w3id.org/SpOTy/shapes-ldo/Center",
+                        "oType": "https://w3id.org/SpOTy/shapes-ldo/Latitude",
+                        "values": []
+                    },
+                    "children": []
+                },
+                {
+                    "line": {
+                        "s": "Center_2",
+                        "p": "https://w3id.org/SpOTy/shapes-ldo/Center_longitude",
+                        "o": "Longitude_6",
+                        "sType": "https://w3id.org/SpOTy/shapes-ldo/Center",
+                        "oType": "https://w3id.org/SpOTy/shapes-ldo/Longitude",
+                        "values": []
+                    },
+                    "children": []
+                }
+            ]
         }
     ]
 }

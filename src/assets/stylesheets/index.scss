@@ -114,3 +114,28 @@ solid-connect {
       }
    }
 }
+.solid-query-ui-wrapper {
+   /*border: 1px solid var(--secondary-color-light);*/
+}
+solid-query-ui {
+   display: block;
+   text-align: right;
+   border: 1px solid var(--secondary-color-light);
+   padding: 5px;
+   button {
+      position: relative;
+      outline: none;
+      border-radius: 3px;
+      padding: 3px 10px;
+      border: 1px solid var(--primary-color-main);
+      color: var(--primary-color-main);
+      background: #fff;
+      cursor: pointer;
+
+      &[disabled] {
+         color: var(--silver-color-main);
+         border: 1px solid var(--silver-color-main);
+         cursor: default;
+      }
+   }
+}
