@@ -4,12 +4,12 @@ var LoggerPretty = require('@comunica/logger-pretty').LoggerPretty;
 var bindingsStreamToGraphQl = require('@comunica/actor-query-result-serialize-tree').bindingsStreamToGraphQl;
 var ProxyHandlerStatic = require('@comunica/actor-http-proxy').ProxyHandlerStatic;
 var WorkerToWindowHandler = require('@rubensworks/solid-client-authn-browser').WorkerToWindowHandler;
+//var WorkerToWindowHandler = require('@inrupt/solid-client-authn-browser').WorkerToWindowHandler;
 var QueryEngineBase = require('@comunica/actor-init-query').QueryEngineBase;
 //var QueryEngine = require('../../../query-sparql-link-traversal-solid').QueryEngine;
 //var QueryEngine = require('../../../engine/lib/index-browser.js').QueryEngine;
 
 import { QueryEngine } from 'spoty-query-engine';
-
 
 // The active fragments client and the current results
 var resultsIterator;
@@ -57,7 +57,8 @@ var handlers = {
     initEngine(config);
     console.log(engine) ;
     // Create a client to fetch the fragments through HTTP
-    config.context.log = logger;
+    //config.context.log = logger;
+    console.log('config service worker') ;
     console.log(config);
     engine.query(config.query, config.context)
       .then(async function (result) {
@@ -103,8 +104,10 @@ var handlers = {
           }
           else {
             resultsIterator.on('data', function (result) {
+              console.log(result.toString());
               if (bindings)
-                result = Object.fromEntries([...result].map(([key, value]) => [RdfString.termToString(key), RdfString.termToString(value)]));
+                result = Object.fromEntries([...result].map(([key, value]) => [key.value, { value: value.value}]));
+                //result = Object.fromEntries([...result].map(([key, value]) => [RdfString.termToString(key), RdfString.termToString(value)]));
               else
                 result = RdfString.quadToStringQuad(result);
               postMessage({ type: 'result', result: result});

@@ -155,7 +155,7 @@
             lang="en"
             defaultLang="en"
             distinct="true"
-            limit="10"
+            limit="5"
             debug="true"
           ></spar-natural>
 
@@ -580,10 +580,10 @@
                   let results = await window.callbackQueryPod(sparql, window.podConnectComponent.logedSession);
                   /*let solidQueryUi = document.querySelector("solid-query-ui");
                   console.log('query launched on index.html') ;
-                  let results = await solidQueryUi.playLdfQueryUI(sparql) ;
+                  let results = await solidQueryUi.playLdfQueryUI(sparql) ;*/
                   
                   console.log('results...');
-                  console.log(solidQueryUi.allResultsRecived) ;*/
+                  //console.log(solidQueryUi.allResultsRecived) ;/**/
                   console.log(results) ;
                   callback(results);
                 //callback(results) ;

@@ -145,17 +145,25 @@ LIMIT 10`;
 
 var RdfString = require('rdf-string');
 var resolve = require('relative-to-absolute-iri').resolve;
-var solidAuth = require('@rubensworks/solid-client-authn-browser');
+var solidAuth = require('@rubensworks/solid-client-authn-browser'); // for servce worker
+//var solidAuth = require('@inrupt/solid-client-authn-browser');
 if (typeof global.process === 'undefined')
   global.process = require('process');
 
+/*import {
+    login,
+    handleIncomingRedirect,
+    getDefaultSession,
+    fetch,
+    Session
+  } from "@rubensworks/solid-client-authn-browser";*/
 import {
     login,
     handleIncomingRedirect,
     getDefaultSession,
     fetch,
     Session
-  } from "@rubensworks/solid-client-authn-browser";/**/
+  } from "@inrupt/solid-client-authn-browser";/**/
 
   import {
     /*Session,
@@ -408,8 +416,8 @@ class SolidQueryUi extends HTMLElement {
       resultsToTree: false,
     });
     this.stopQuerytButton.disabled = false;
-    let allResult = await this.attendreResults() ;
-    console.log(allResult);
+    //let allResult = await this.attendreResults() ;
+    //console.log(allResult);
     for(var start = 1; this.onQueryProcess; start++) {
       console.log('index waiting results...');
       if (this.onQueryProcess) {
@@ -419,17 +427,18 @@ class SolidQueryUi extends HTMLElement {
       
     }
     if(this.allResultsRecived.length > 0) {
-      return  {
+      console.log(this.allResultsRecived[0]) ;
+      let firstResultKeys = Object.keys(this.allResultsRecived[0]);
+      return await {
         "head" : {
-          "vars" : [
-            "Sentence_1",
-            "Sentence_1_label"
-          ]
+          "vars" : firstResultKeys
         },
         "results" : {
-          "bindings" : [this.allResultsRecived]
+          "bindings" : this.allResultsRecived
         }
       } ;
+
+
     } else {
       return {} ;
     }
@@ -439,9 +448,9 @@ class SolidQueryUi extends HTMLElement {
 
   
                   
-
-  async attendreResults():Promise<any> {
-    if (this.onQueryProcess) {
+ /*
+  attendreResults():Promise<any> {
+   if (this.onQueryProcess) {
       return await setTimeout(async () => {
         console.log(`Patienter... en process ${this.onQueryProcess}`);
         return await this.attendreResults();
@@ -452,7 +461,7 @@ class SolidQueryUi extends HTMLElement {
       
       console.log(this.allResultsRecived) ;
       if(this.allResultsRecived.length > 0) {
-        return  {
+        return async {
           "head" : {
             "vars" : [
               "Sentence_1",
@@ -464,11 +473,11 @@ class SolidQueryUi extends HTMLElement {
           }
         } ;
       } else {
-        return {} ;
+        return await {} ;
       }
       //return 'All results' ;
-    }
-  }
+    //}
+  }*/
 
   
   stopExecution (error:any) {
@@ -516,8 +525,8 @@ class SolidQueryUi extends HTMLElement {
     options = this.options,
     datasources = [
       'https://solid.champin.net/pa/spoty/', 
-      'https://w3id.org/SpOTy/languages',
-      'https://w3id.org/SpOTy/ontology'
+      /*'https://w3id.org/SpOTy/languages',
+      'https://w3id.org/SpOTy/ontology'*/
     ],
     
     bypassCache = this.bypassCache = false;
@@ -564,7 +573,7 @@ class SolidQueryUi extends HTMLElement {
     this.resultCount = 0 ;
     var self = this;
     this.serviceWorker = new Worker('assets/js/ldf-client-worker_v2.js');
-    //this._queryWorker = new Worker('assets/js/ldf-client-worker.min.js?v=1');
+    //this.serviceWorker = new Worker('assets/js/ldf-client-worker.min.js?v=1');
     this.queryWorkerSessionHandler = undefined;
     this.serviceWorker.onmessage = function (message:any) {
       if (self.queryWorkerSessionHandler && self.queryWorkerSessionHandler.onmessage(message))
