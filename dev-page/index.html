@@ -556,13 +556,30 @@
 
       window.callbackQueryPod = async function (sparql, session) {
         console.log('callback launched') ;
-        let results = await window.podQueryEngine(sparql, session) ;
-        return results ;
+        
+        let podurl = window.podConnectComponent.source ;
+        if (podurl == '') {
+          alert("Please enter source url") ;
+          return await window.errorCollbackQueryPod('No source url defined') ;
+        } else {
+          return await window.podQueryEngine(sparql, session, podurl) ;
+        }
+        
+        //return await results ;
       }
-      windowerrorCollbackQueryPod = function(error) {
-        console.log(error) ;
+      window.errorCollbackQueryPod = function(message) {
+        console.log(message) ;
+        let error = new Error(message) ;
+        return error;
       }
 
+      class CustomError extends Error {
+        constructor(message = "", ...args) {
+          super(message, ...args);
+          this.message = message + " has not yet been implemented.";
+        }
+      }
+      //window.errorCollbackQueryPod.prototype = Error.prototype;
 
 
       sparnatural.addEventListener("init", (event) => {
@@ -577,20 +594,31 @@
 
                 if (window.podConnectComponent.logedSession) {
                   console.log('Connected to pod') ;
-                  let results = await window.callbackQueryPod(sparql, window.podConnectComponent.logedSession);
+                    let results = await window.callbackQueryPod(sparql, window.podConnectComponent.logedSession);
+                    console.log('results...');
+                    //console.log(solidQueryUi.allResultsRecived) ;/**/
+                  if (results instanceof Error) {
+                    
+                    errorCallback(results) ;
+
+                  } else{
+                    
+                    console.log(results) ;
+                  
+                    callback(results);
+                  }
+                  
                   /*let solidQueryUi = document.querySelector("solid-query-ui");
                   console.log('query launched on index.html') ;
                   let results = await solidQueryUi.playLdfQueryUI(sparql) ;*/
                   
-                  console.log('results...');
-                  //console.log(solidQueryUi.allResultsRecived) ;/**/
-                  console.log(results) ;
-                  callback(results);
+                  
                 //callback(results) ;
 
                 } else {
-                  window.windowerrorCollbackQueryPod('Not connected to pod') ;
-                  return {};
+                  let error = window.errorCollbackQueryPod('Not connected to pod') ;
+                  
+                  errorCallback(error) ;
                 }
                 
                 // ... execute SPARQL ...

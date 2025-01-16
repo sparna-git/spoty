@@ -11,7 +11,7 @@ console.log(myEngine) ;
 const engine = new QueryEngineBase(require('spoty-query-engine'));
 console.log(engine) ;
 async function timer(ms:any) { return new Promise(res => setTimeout(res, ms)); }
-(<any>window).podQueryEngine = async function (sparql:string, session:any) {
+(<any>window).podQueryEngine = async function (sparql:string, session:any, podUrl:any) {
  
   console.log('Query launched with :'+ sparql);
   console.log(session);
@@ -49,7 +49,7 @@ LIMIT 10`;
 
 	const bindingsStream = await myEngine.queryBindings(sparql, {
 	  sources: [
-      'https://solid.champin.net/pa/spoty/', 
+      podUrl, 
        /*'https://w3id.org/SpOTy/languages',
         'https://w3id.org/SpOTy/ontology',
         'https://solid.champin.net/pa/public/spoty/ontology',
@@ -694,6 +694,7 @@ class SolidConnect extends HTMLElement {
     this.initEventListners()
     this.handleRedirectAfterLogin();
     this.welcomMessage = 'Please connect to Solid';
+    this.source = ''; 
   }
   addUiUx() {
     this.welcomElement = document.createElement("span");
@@ -765,6 +766,15 @@ class SolidConnect extends HTMLElement {
         this.enabledConnectSubmit = true ;
       } else {
         this.enabledConnectSubmit = false; 
+      }
+    });
+
+    this.sourcesInput.addEventListener("change", (event:any) => {
+      console.log(this.isValidUrl(event.target.value as string)) ;
+      if (this.isValidUrl(event.target.value as string)) {
+        this.source = event.target.value as string;
+      } else {
+        this.source = ''; 
       }
     });
   }
@@ -847,6 +857,7 @@ class SolidConnect extends HTMLElement {
     return url.protocol === "http:" || url.protocol === "https:";
 }
 }
+
 
 customElements.define("solid-connect", SolidConnect);
 customElements.define("solid-query-ui", SolidQueryUi);
