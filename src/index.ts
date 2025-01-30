@@ -24,7 +24,7 @@ async function timer(ms:any) { return new Promise(res => setTimeout(res, ms)); }
   
 
 
-	const bindingsStream = await myEngine.queryBindings(sparql, {
+	const bindingsStream = await myEngine.query(sparql, {
 	  sources: [
       podUrl, 
        /*'https://w3id.org/SpOTy/languages',
@@ -40,38 +40,33 @@ async function timer(ms:any) { return new Promise(res => setTimeout(res, ms)); }
       '@comunica/actor-rdf-resolve-hypermedia-links-traverse:traverse': true,
       '@comunica/actor-http-inrupt-solid-client-authn:session': session,
 	});
-
+  const { data } = await myEngine.resultToString(bindingsStream, 'application/sparql-results+json');
+    console.log(await data) ;
   
   var onQueryProcess = true;
   var results:any = [] ;
-  var results_keys:any = [] ;
+  let results_string = '' ;
 
-	bindingsStream.on('data', (binding:any) => {
-	    console.log(JSON.parse(binding.toString())) ; // Quick way to print bindings for testing
 
-      results_keys = [] ;
-      let result = JSON.parse(binding.toString());
-      Object.keys(result).forEach(key => {
-        results_keys.push(key) ;
-        //console.log(key);        // the name of the current key.
-        result[key] = {value: result[key] }; // the value of the current key.
-      });
-      
-      console.log(result) ;
-
-      results.push(result) ;
+  data.on('data', (binding:any) => {
+    console.log(binding.toString()) ;
+	    //console.log(JSON.parse(binding.toString())) ; // Quick way to print bindings for testing
+      results_string = results_string + binding.toString();
 
 	});
 
-	bindingsStream.on('end', () => {
+	data.on('end', () => {
 	    // The data-listener will not be called anymore once we get here.
+      results = JSON.parse(results_string);
+      console.log(results);
 	    console.log("Query execution has ended !");
       onQueryProcess = false;
 	});
 
-	bindingsStream.on('error', (error:any) => {
+	data.on('error', (error:any) => {
 	    console.error(error);
 	});
+  
 
   
 
@@ -83,14 +78,6 @@ async function timer(ms:any) { return new Promise(res => setTimeout(res, ms)); }
     }
   }
 
-  results = {
-    "head" : {
-      "vars" : results_keys 
-    },
-    "results" : {
-      "bindings" : results
-    }
-  }
   return results ;
 }
 
