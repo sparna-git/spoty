@@ -27,17 +27,17 @@ async function timer(ms:any) { return new Promise(res => setTimeout(res, ms)); }
 	const bindingsStream = await myEngine.query(sparql, {
 	  sources: [
       podUrl, 
-       /*'https://w3id.org/SpOTy/languages',
-        'https://w3id.org/SpOTy/ontology',
-        'https://solid.champin.net/pa/public/spoty/ontology',
-        'https://solid.champin.net/pa/public/spoty/languages'*/
-        //{ type: 'file', value: 'https://w3id.org/SpOTy/ontology' },
-        //{ type: 'file', value: 'https://w3id.org/SpOTy/languages' },
+      //'https://w3id.org/SpOTy/languages',
+        //'https://w3id.org/SpOTy/ontology',
+         //'https://solid.champin.net/pa/public/spoty/ontology',
+        //'https://solid.champin.net/pa/public/spoty/languages'
+        { type: 'file', value: 'https://w3id.org/SpOTy/ontology' },
+        { type: 'file', value: 'https://w3id.org/SpOTy/languages' },
       ],
-      fetch: session.fetch,
+      //fetch: session.fetch,
       lenient: true,
-      //'@comunica/actor-rdf-resolve-hypermedia-links-traverse:traverse': false,
       '@comunica/actor-rdf-resolve-hypermedia-links-traverse:traverse': true,
+      //'@comunica/actor-rdf-resolve-hypermedia-links-traverse:traverse': true,
       '@comunica/actor-http-inrupt-solid-client-authn:session': session,
 	});
   const { data } = await myEngine.resultToString(bindingsStream, 'application/sparql-results+json');
