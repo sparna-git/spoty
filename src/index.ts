@@ -22,19 +22,25 @@ async function timer(ms:any) { return new Promise(res => setTimeout(res, ms)); }
   console.log('Query launched with :'+ sparql);
   console.log(session);
   
+  const loggingFetch = async (input:any, init:any) => {
+    console.log(`Requesting ${input} with ${JSON.stringify(init, null, 2)}`);
+    const response = await session.fetch(input, init);
+    console.log(`Got response ${JSON.stringify(response)}`);
+    return response;
+  }
 
-
+  console.log(podUrl) ;
 	const bindingsStream = await myEngine.query(sparql, {
-	  sources: [
+	  sources: 
       podUrl, 
       //'https://w3id.org/SpOTy/languages',
         //'https://w3id.org/SpOTy/ontology',
          //'https://solid.champin.net/pa/public/spoty/ontology',
         //'https://solid.champin.net/pa/public/spoty/languages'
-        { type: 'file', value: 'https://w3id.org/SpOTy/ontology' },
-        { type: 'file', value: 'https://w3id.org/SpOTy/languages' },
-      ],
-      //fetch: session.fetch,
+        //{ type: 'file', value: 'https://solid.champin.net/pa/spoty/ontology' },
+        //{ type: 'file', value: 'https://solid.champin.net/pa/spoty/languages' },
+      
+      fetch: loggingFetch,
       lenient: true,
       '@comunica/actor-rdf-resolve-hypermedia-links-traverse:traverse': true,
       //'@comunica/actor-rdf-resolve-hypermedia-links-traverse:traverse': true,
@@ -157,12 +163,14 @@ class SolidConnect extends HTMLElement {
     this._logedSession = value;
   }
 
+  get allSources(): Array<string> { return this._additionalSources.concat( [this._source]); }
+
 
   initElement() {
     console.log(this) ;
     this.suggestedIdpSrc = this.getAttribute('suggest-idp-src').split(',');
     this.suggestedSources = this.getAttribute('suggest-sources').split(',');
-    this.additionalSources = this.getAttribute('additional-sources').split(',');
+    this.additionalSources = this.getAttribute('additional-sources').split(',').filter(r => r !== '');
     this.addUiUx() ;
     
     this.connected = false;
