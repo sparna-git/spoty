@@ -163,7 +163,7 @@ class SolidConnect extends HTMLElement {
     this._logedSession = value;
   }
 
-  get allSources(): Array<string> { return this._additionalSources.concat( [this._source]); }
+  get allSources(): Array<string> { return [this._source].concat(this._additionalSources ); }
 
 
   initElement() {
